@@ -53,6 +53,7 @@ class ResLinearModel:
         wandb.define_metric("val/epoch")
         wandb.define_metric("val/*", step_metric="val/epoch")
         wandb.define_metric("val/loss", summary="min", step_metric="val/epoch")
+        wandb.define_metric("val/ratio", summary="min", step_metric="val/epoch")
 
     def initialize_net(self):
         self.net = ResLinearNet(
