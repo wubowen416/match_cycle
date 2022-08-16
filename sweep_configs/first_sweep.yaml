@@ -1,0 +1,42 @@
+project: match_cycle
+name: first_sweep
+program: train.py
+method: random
+metric:
+  name: val_ratio
+  goal: minimize
+parameters:
+  run_name:
+    value: first_sweep
+  sweep:
+    value: true
+  d_model:
+    values: [64, 128, 256]
+  num_layers:
+    values: [2, 3, 4]
+  lr:
+    distribution: log_uniform_values
+    min: 1e-6
+    max: 1e-1
+  momentum:
+    values: [0.95, 0.97, 0.99]
+  adagrad:
+    values: [0.995, 0.997, 0.999]
+  weight_decay:
+    values: [0, 1e-3, 1e-4, 1e-5]
+  dropout:
+    values: [0, 0.1, 0.2, 0.3]
+  batch_size:
+    values: [32, 64, 128, 256]
+  lambda_mse:
+    distribution: uniform
+    min: 0
+    max: 1
+  lambda_l1:
+    distribution: uniform
+    min: 0
+    max: 1
+  lambda_ratio:
+    distribution: uniform
+    min: 0
+    max: 1

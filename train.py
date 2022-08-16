@@ -11,17 +11,16 @@ def main(args):
     args = add_dict_to_namespace(args, database.get_dims())
     model = ResLinearModel(args)
     model.fit(database.get_train_dataset(), database.get_val_dataset())
-    model.load_best()
-    model.eval(database.get_test_dataset())
 
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     # global args
     parser.add_argument("--seed", type=int, default=0, help="random state.")
-    parser.add_argument("--device", type=str, default="cuda", help="On which machine to run scripts.")
+    parser.add_argument("--device", type=str, default="cuda", help="On which machine to run scripts.") 
     parser.add_argument("--project", type=str, default="match_cycle", help="wandb project name.")
     parser.add_argument("--run_name", type=str, default="debug", help="wandb run name.")
+    parser.add_argument("--sweep", type=bool, default=False, help="If in sweeping mode.")
     # dataset args
     parser.add_argument("--dataset_path", type=str, default="inputs/match_cycle.txt", help="path for training data.")
     parser.add_argument("--y_maximum", type=str, default=40000, help="upper limit for filtering target value in dataset.")

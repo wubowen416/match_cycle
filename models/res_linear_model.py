@@ -29,7 +29,8 @@ class ResLinearModel:
             os.path.join(self.args.chkpt_path, self.args.run_name), 
             "best.pt"
         )
-        os.makedirs(os.path.dirname(self.best_chkpt_path), exist_ok=True)
+        if not self.args.sweep: 
+            os.makedirs(os.path.dirname(self.best_chkpt_path), exist_ok=True)
         self.last_chkpt_path = self.best_chkpt_path.replace("best", "last")
         self.initialize_net()
         self.net.to(args.device)
@@ -110,12 +111,14 @@ class ResLinearModel:
             best_loss = self.best_loss,
             run_id = self.run_id
         )
-        th.save(chkpt, self.last_chkpt_path)
+        if not self.args.sweep:
+            th.save(chkpt, self.last_chkpt_path)
         if val_loss < self.best_loss:
             print("val loss decreased from {} to {}. Model saved at {}".format(self.best_loss, val_loss, self.best_chkpt_path))
             self.best_loss = val_loss
             self.early_stopping_counter = 0
-            th.save(chkpt, self.best_chkpt_path)
+            if not self.args.sweep:
+                th.save(chkpt, self.best_chkpt_path)
         else:
             print("val loss did not decreased. Earlystopping count: {} out of {}.".format(self.early_stopping_counter, self.args.early_stopping))
             self.early_stopping_counter += 1
@@ -198,8 +201,9 @@ class ResLinearModel:
                 loss_terms = self.compute_loss(ys_true, ys)
                 for loss_name, value in loss_terms.items():
                     log_dict[f"val/{loss_name}"] += value.item() / len(val_loader)
+            log_dict["val_ratio"] = log_dict['val/ratio']
             wandb.log(log_dict)
-            early_stop = self.checkpoint(log_dict['val/loss'])
+            early_stop = self.checkpoint(log_dict['val/ratio'])
             if early_stop:
                 break
 
